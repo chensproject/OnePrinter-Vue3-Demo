@@ -15,7 +15,9 @@
 # 代码说明
 
 1、通过onMounted调用OnePrinter的getPrinter接口获取到打印机列表；
+
 2、使用html2canvas生成名片；
+
 3、调用OnePrinter的print发送打印请求；
 
 # 安装方法
@@ -37,3 +39,8 @@ npm run dev
 ```sh
 npm run build
 ```
+
+# 作者信息
+
+北京网为科技有限公司
+<https://www.wangwei.ltd>
