@@ -47,8 +47,8 @@
     </div>
 
     <div style="margin-top: 60px;">
-      请先下载OnePrinter服务端，文档及下载地址： <el-link href="https://docs.wangwei.ltd/oneprinter/"
-        target="_blank">https://docs.wangwei.ltd/oneprinter/</el-link>
+      请先下载OnePrinter服务端，文档及下载地址： <el-link href="https://docs.wangwei.ltd/guide/oneprinter/"
+        target="_blank">https://docs.wangwei.ltd/guide/oneprinter/</el-link>
     </div>
     <div>
       本演示地址： <el-link href="https://demo.oneprinter.cn/" target="_blank">https://demo.oneprinter.cn/</el-link>
