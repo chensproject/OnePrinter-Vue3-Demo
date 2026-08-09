@@ -177,7 +177,12 @@ const toPrint = async () => {
         copies: form.value.copies,
         base64: imgData,
         // url: "", // 使用外网接时，要把生成的文件存到自己的服务器上，然后传文件路径即可。
-        secret_key: secret_key
+        secret_key: secret_key,
+        // 使用【模板打印】时，请在OnePrinter服务商设置好打印模板，然后【下载字段】json文件，放在这里就可以了，不用传url或base64
+        template: {
+          code: "",
+          data: [],
+        }
       }
       const response = await axios.post(api + 'print', obj);
       if (response.data.code === 1) {
