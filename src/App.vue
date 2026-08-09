@@ -1,3 +1,53 @@
+<template>
+  <div class="main">
+    <div>
+      <h1>OnePrinter接口打印功能演示</h1>
+    </div>
+    <el-form :model="form" label-width="auto">
+      <el-form-item label="人物列表">
+        <el-checkbox-group v-model="form.names">
+          <el-checkbox :label="item" :value="item" v-for="(item, index) in nameList" :key="index" />
+        </el-checkbox-group>
+      </el-form-item>
+    </el-form>
+
+    <div ref="pdfContent" class="card-container">
+      <div v-if="form.names.length === 0" class="card">请选择人物</div>
+      <div class="w-flex" style="flex-direction: column;" v-for="name in form.names" :key="name">
+        <div class="card">{{ name }}</div>
+        <el-button type="primary" @click="generatePDF(name)">下载文件</el-button>
+      </div>
+    </div>
+
+    <div>
+      <el-form :model="form" label-width="auto" style="width: 600px;">
+        <el-form-item label="打印机" required>
+          <el-select v-model="form.printer" placeholder="请选择打印机" @change="changePrinter">
+            <el-option :value="item.name" v-for="(item, index) in printers" :key="index"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="纸张名称" required>
+          <el-select v-model="form.paper_size" placeholder="请选择纸张">
+            <el-option :value="item.name" v-for="(item, index) in paperSizeList" :key="index">
+              <div class="w-flex w-gap-20">
+                <div>{{ item.name }}</div>
+                <div class="w-p-r-20">
+                  {{ item.width }} × {{ item.height }} 毫米
+                </div>
+              </div>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="打印份数" required>
+          <el-input-number v-model="form.copies" controls controls-position="right" :min="1"
+            style="width: 100%;"></el-input-number>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" @click="toPrint" style="width: 100%;">打印文件</el-button>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import { ref, nextTick, onMounted } from 'vue';
 import axios from 'axios';
@@ -6,7 +56,9 @@ import { ElMessage } from 'element-plus';
 
 const form = ref({
   names: [],
-  printer: ''
+  printer: '',
+  paper_size: "",
+  copies: 1,
 });
 const nameList = ref(['郭靖', '黄蓉', '杨过', '小龙女', '张无忌', '赵敏', '令狐冲', '任盈盈', '乔峰', '段誉']);
 
@@ -35,6 +87,17 @@ const getPrinter = async () => {
     ElMessage.error('网络异常，请稍后重试');
   }
 };
+
+// 根据打印机切换纸张
+const paperSizeList = ref([])
+const changePrinter = (row) => {
+  form.value.paper_size = ""
+  printers.value.forEach((item) => {
+    if (item.name === form.value.printer) {
+      paperSizeList.value = item.papers;
+    }
+  })
+}
 
 const pdfContent = ref(null);
 
@@ -69,16 +132,13 @@ const generatePDF = async (name) => {
     useCORS: true,
     backgroundColor: '#ffffff'
   });
-
   // 生成图片数据（PNG 格式）
   const imgData = canvas.toDataURL('image/png');
-
   // 创建下载链接并自动点击
   const link = document.createElement('a');
   link.download = fileName;
   link.href = imgData;
   link.click();
-
   ElMessage.success(`「${name}」图片已下载`);
 };
 
@@ -99,7 +159,6 @@ const toPrint = async () => {
     ElMessage.error('未找到卡片元素');
     return;
   }
-
   // 逐个卡片发送打印请求
   for (let i = 0; i < cards.length; i++) {
     const card = cards[i];
@@ -114,6 +173,8 @@ const toPrint = async () => {
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
       let obj = {
         printer: form.value.printer,
+        paper_size: form.value.paper_size,
+        copies: form.value.copies,
         base64: imgData,
         // url: "", // 使用外网接时，要把生成的文件存到自己的服务器上，然后传文件路径即可。
         secret_key: secret_key
@@ -136,39 +197,6 @@ onMounted(() => {
 });
 </script>
 
-<template>
-  <div class="main">
-    <div>
-      <h1>OnePrinter接口打印功能演示</h1>
-    </div>
-    <el-form :model="form" label-width="auto">
-      <el-form-item label="人物列表">
-        <el-checkbox-group v-model="form.names">
-          <el-checkbox :label="item" :value="item" v-for="(item, index) in nameList" :key="index" />
-        </el-checkbox-group>
-      </el-form-item>
-    </el-form>
-
-    <div ref="pdfContent" class="card-container">
-      <div v-if="form.names.length === 0" class="card">请选择人物</div>
-      <div class="w-flex" style="flex-direction: column;" v-for="name in form.names" :key="name">
-        <div class="card">{{ name }}</div>
-        <el-button type="primary" @click="generatePDF(name)">下载文件</el-button>
-      </div>
-    </div>
-
-    <div>
-      <el-form :model="form" label-width="auto" style="width: 600px;">
-        <el-form-item label="打印机" required>
-          <el-select v-model="form.printer" placeholder="请选择打印机">
-            <el-option :value="item" v-for="(item, index) in printers" :key="index"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <el-button type="primary" @click="toPrint" style="width: 100%;">打印文件</el-button>
-    </div>
-  </div>
-</template>
 
 <style scoped>
 .main {
