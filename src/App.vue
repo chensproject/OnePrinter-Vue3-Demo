@@ -45,6 +45,22 @@
       </el-form>
       <el-button type="primary" @click="toPrint" style="width: 100%;">打印文件</el-button>
     </div>
+
+    <div style="margin-top: 60px;">
+      请先下载OnePrinter服务端： <el-link href="https://docs.wangwei.ltd/oneprinter/"
+        target="_blank">https://docs.wangwei.ltd/oneprinter/</el-link>
+    </div>
+    <div>
+      本演示地址： <el-link href="https://demo.oneprinter.cn/" target="_blank">https://demo.oneprinter.cn/</el-link>
+    </div>
+    <div>
+      本演示的gitee下载地址：<el-link href="https://gitee.com/chenrongbin/OnePrinter-Vue3-Demo"
+        target="_blank">https://gitee.com/chenrongbin/OnePrinter-Vue3-Demo</el-link>
+    </div>
+    <div>
+      本演示的github下载地址：<el-link href="https://github.com/chensproject/OnePrinter-Vue3-Demo"
+        target="_blank">https://github.com/chensproject/OnePrinter-Vue3-Demo</el-link>
+    </div>
   </div>
 </template>
 
